@@ -2,39 +2,114 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\ORM\Mapping as ORM;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
-use PhpParser\Node\Expr\Cast\Bool_;
+use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class User
 {
+    #[Groups('user')]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
+    #[Groups('user')]
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $username = null;
+    private string $username;
 
+    #[Groups('user')]
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $email = null;
+    private string $email;
 
+    #[Groups('user')]
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $password = null;
+    private string $password;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Groups('user')]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $picture = null;
 
+    #[Groups('user')]
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE)]
-    private ?string $createdAt = null;
+    private DateTime $createdAt;
 
-    #[ORM\Column(name: 'updated_at', type: Types::DATETIME_MUTABLE)]
-    private ?string $updatedAt = null;
 
+    #[Groups('user')]
+    #[ORM\Column(name: 'updated_at', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTime $updatedAt = null;
+
+
+    #[Groups('user')]
     #[ORM\Column(name: 'is_admin', type: Types::BOOLEAN, options: ["default" => 0])]
-    private ?Bool $isAdmin = null;
+    private bool $isAdmin = false;
+
+    #[Groups('user')]
+    #[ORM\OneToMany(targetEntity: Trick::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection  $tricks;
+
+    #[Groups('user')]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection  $comments;
+
+    public function __construct()
+    {
+        $this->tricks = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+    }
+
+
+    public function addTrick(Trick $trick): self
+    {
+        if (!$this->tricks?->contains($trick)) {
+            $this->tricks[] = $trick;
+            $trick->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrick(Trick $trick): self
+    {
+        if ($this->tricks?->contains($trick)) {
+            $this->tricks?->removeElement($trick);
+            // set the owning side to null (unless already changed)
+            if ($trick->getUser() === $this) {
+                $trick->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments?->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments?->contains($comment)) {
+            $this->comments?->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
+
+        return $this;
+    }
 
     /**
      * Get the value of id
@@ -44,12 +119,22 @@ class User
         return $this->id;
     }
 
+
+
     /**
-     * Set the value of id
+     * Get the value of tricks
      */
-    public function setId(?int $id): self
+    public function getTricks(): Collection
     {
-        $this->id = $id;
+        return $this->tricks;
+    }
+
+    /**
+     * Set the value of tricks
+     */
+    public function setTricks(Collection $tricks): self
+    {
+        $this->tricks = $tricks;
 
         return $this;
     }
@@ -57,7 +142,7 @@ class User
     /**
      * Get the value of username
      */
-    public function getUsername(): ?string
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -65,7 +150,7 @@ class User
     /**
      * Set the value of username
      */
-    public function setUsername(?string $username): self
+    public function setUsername(string $username): self
     {
         $this->username = $username;
 
@@ -75,7 +160,7 @@ class User
     /**
      * Get the value of email
      */
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -83,7 +168,7 @@ class User
     /**
      * Set the value of email
      */
-    public function setEmail(?string $email): self
+    public function setEmail(string $email): self
     {
         $this->email = $email;
 
@@ -93,7 +178,7 @@ class User
     /**
      * Get the value of password
      */
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -127,46 +212,9 @@ class User
     }
 
     /**
-     * Get the value of createdAt
-     */
-    public function getCreatedAt(): ?string
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set the value of createdAt
-     */
-    public function setCreatedAt(?string $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of updatedAt
-     */
-    public function getUpdatedAt(): ?string
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * Set the value of updatedAt
-     */
-    public function setUpdatedAt(?string $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-
-    /**
      * Get the value of isAdmin
      */
-    public function getIsAdmin(): ?Bool
+    public function getIsAdmin(): bool
     {
         return $this->isAdmin;
     }
@@ -174,11 +222,52 @@ class User
     /**
      * Set the value of isAdmin
      */
-    public function setIsAdmin(?Bool $isAdmin): self
+    public function setIsAdmin(bool $isAdmin): self
     {
         $this->isAdmin = $isAdmin;
 
         return $this;
     }
 
+    public function getCreatedAt(): DateTime
+    {
+        return $this->createdAt;
+    }
+    public function getUpdatedAt(): ?DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        $this->createdAt = new DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
+    {
+        $this->updatedAt = new DateTime();
+    }
+
+
+    /**
+     * Get the value of comments
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * Set the value of comments
+     *
+     * @return  self
+     */
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
 }
