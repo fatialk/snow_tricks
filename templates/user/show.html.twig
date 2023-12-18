@@ -24,8 +24,8 @@
                 <td>{{ user.password }}</td>
             </tr>
             <tr>
-                <th>Picture</th>
-                <td>{{ user.picture }}</td>
+                <th>Avatar</th>
+                <td>{{ user.avatar }}</td>
             </tr>
             <tr>
                 <th>CreatedAt</th>
@@ -42,9 +42,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_user2_index') }}">back to list</a>
+    <a href="{{ path('app_user_index') }}">back to list</a>
 
-    <a href="{{ path('app_user2_edit', {'id': user.id}) }}">edit</a>
+    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
 
-    {{ include('user2/_delete_form.html.twig') }}
+    {{ include('user/_delete_form.html.twig') }}
 {% endblock %}
