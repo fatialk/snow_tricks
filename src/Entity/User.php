@@ -3,16 +3,21 @@
 namespace App\Entity;
 
 use DateTime;
+use App\Entity\Trick;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class User
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[Groups('user')]
     #[ORM\Id]
@@ -34,7 +39,7 @@ class User
 
     #[Groups('user')]
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    private ?string $picture = null;
+    private ?string $avatarFilename = null;
 
     #[Groups('user')]
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE)]
@@ -119,6 +124,11 @@ class User
         return $this->id;
     }
 
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
+
+    #[ORM\Column(type: 'boolean')]
+    private $isVerified = false;
 
 
     /**
@@ -193,20 +203,23 @@ class User
         return $this;
     }
 
+
     /**
-     * Get the value of picture
+     * Get the value of avatarFilename
      */
-    public function getPicture(): ?string
+    public function getAvatarFilename()
     {
-        return $this->picture;
+        return $this->avatarFilename;
     }
 
     /**
-     * Set the value of picture
+     * Set the value of avatarFilename
+     *
+     * @return  self
      */
-    public function setPicture(?string $picture): self
+    public function setAvatarFilename($avatarFilename)
     {
-        $this->picture = $picture;
+        $this->avatarFilename = $avatarFilename;
 
         return $this;
     }
@@ -270,4 +283,64 @@ class User
 
         return $this;
     }
+
+  // @see UserInterface
+    //
+   public function getUserIdentifier(): string
+   {
+       return (string) $this->email;
+   }
+
+   /**
+    * @see UserInterface
+    */
+   public function getRoles(): array
+   {
+       $roles = $this->roles;
+       // guarantee every user at least has ROLE_USER
+       $roles[] = 'ROLE_USER';
+
+       return array_unique($roles);
+   }
+
+   public function setRoles(array $roles): self
+   {
+       $this->roles = $roles;
+
+       return $this;
+   }
+
+   /**
+     * Returning a salt is only needed if you are not using a modern
+     * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
+     *
+     * @see UserInterface
+     */
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
 }
+
