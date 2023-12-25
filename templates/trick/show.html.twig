@@ -3,6 +3,7 @@
 {% block title %}Trick{% endblock %}
 
 {% block body %}
+<div class="container">
     <h1>Trick</h1>
 
     <table class="table">
@@ -25,11 +26,18 @@
             </tr>
             <tr>
                 <th>Illustrations</th>
-                <td>{{ trick.illustrations ? trick.illustrations|json_encode : '' }}</td>
+                <td>{% for illustration in trick.illustrationsFilenames %}
+                <img width="100" src="{{ asset('uploads/trick/'~illustration)}}"/>
+                {% endfor %}
+                </td>
             </tr>
             <tr>
                 <th>Videos</th>
-                <td>{{ trick.videos ? trick.videos|json_encode : '' }}</td>
+                <td>
+                {% for video in trick.videos %}
+                <a href ="{{video}}">{{video}}</a><br>
+                {% endfor %}
+                </td>
             </tr>
             <tr>
                 <th>CreatedAt</th>
@@ -47,4 +55,5 @@
     <a href="{{ path('app_trick_edit', {'id': trick.id}) }}">edit</a>
 
     {{ include('trick/_delete_form.html.twig') }}
+    </div>
 {% endblock %}
