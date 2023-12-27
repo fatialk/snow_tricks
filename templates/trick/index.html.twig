@@ -12,11 +12,13 @@
             <div class="trick">
             {% endif %}
     <div class="card">
+    <a href="{{path('app_trick_show',{id : trick.id} )}}">
 		<img class="card-img-top" src="{{ asset('uploads/trick/'~trick.illustrationsFilenames.0)}}" width="350px" height="300px">
       <div class="card-body">
         <h5 class="card-title">{{trick.name}}</h5>
         <p class="card-text">{{trick.description[:20]}} ...</p>
 	  </div>
+    </a>
 	  <div class="card-footer">
 					<a href="#" class="card--button">
 						<span class="lnr lnr-pencil"></span>
