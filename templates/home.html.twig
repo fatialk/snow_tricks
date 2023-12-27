@@ -1,63 +1,36 @@
-{% extends 'base.html.twig'%}
-{% set banner = true %}
-{% block body %}
-<!-- Start trick Area -->
-<section class="trick-area section-gap" id="trick">
-	<div class="container">
-		<div class="row">
-			<div class="single-trick media pb-70">
-				<img class="img-fluid d-flex  mr-3" src="img/t1.jpg" alt="">
-				<div class="dates">
-					<p>
-						<span class="lnr lnr-pencil"></span>
-					</p>
-					<p>
-						<span class="lnr lnr-trash"></span>
-					</p>
-				</div>
-				<div class="media-body">
-					<h4 class="mt-0">
-						<a href="#">Trick 1</a>
-					</h4>
-					<div class="meta-bottom d-flex">
-						<p>
-							<span class="lnr lnr-heart"></span>
-							15
-						</p>
-						<p>
-							<span class="lnr lnr-bubble"></span>
-							02
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="single-trick media">
-				<img class="img-fluid d-flex  mr-3" src="img/t3.jpg" alt="">
-				<div class="dates">
-					<span>20</span>
-					<p>Dec</p>
-				</div>
-				<div class="media-body">
-					<h4 class="mt-0">
-						<a href="#">Trick 2</a>
-					</h4>
-					<div class="meta-bottom d-flex justify-content-between">
-						<p>
-							<span class="lnr lnr-heart"></span>
-							15
-						</p>
-						<p>
-							<span class="lnr lnr-bubble"></span>
-							02
-						</p>
-					</div>
-				</div>
-			</div>
 
-			<a href="#" class="primary-btn load-more pbtn-2 text-uppercase mx-auto mt-60">Load More
-			</a>
-		</div>
+{% extends 'base.html.twig'%}
+{% block body %}
+{% include 'banner.html.twig' %}
+<div class="container home">
+<div class="row row-cols-sm-1 row-cols-md-2 row-cols-lg-3 g-4">
+{% for trick in tricks %}
+          {% if loop.index > 6 %}
+            <div class="trick d-none">
+            {% else %}
+            <div class="trick">
+            {% endif %}
+    <div class="card">
+    <a href="{{path('app_trick_show',{id : trick.id} )}}">
+		<img class="card-img-top" src="{{ asset('uploads/trick/'~trick.illustrationsFilenames.0)}}" width="350px" height="300px">
+      <div class="card-body">
+        <h5 class="card-title">{{trick.name}}</h5>
+        <p class="card-text">{{trick.description[:20]}} ...</p>
+	  </div>
+    </a>
+	  <div class="card-footer">
+					<a href="#" class="card--button">
+						<span class="lnr lnr-pencil"></span>
+					</a>
+					<a href="#" class="card--button">
+						<span class="lnr lnr-trash"></span>
+					</a>
+				</div>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+	<button id="loadMore">Load More</button>
 	</div>
-</section>
-<!-- End trick Area -->
 {% endblock %}

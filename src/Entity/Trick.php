@@ -12,9 +12,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-
-
-
+#[ORM\UniqueConstraint(name: 'unique_name', columns: ['name'])]
 class Trick
 {
 
@@ -39,7 +37,7 @@ class Trick
 
     #[Groups('trick')]
     #[ORM\Column]
-    private array $illustrations = [];
+    private array $illustrationsFilenames = [];
 
     #[Groups('trick')]
     #[ORM\Column]
@@ -144,14 +142,14 @@ class Trick
         return $this;
     }
 
-    public function getIllustrations(): array
+    public function getIllustrationsFilenames(): array
     {
-        return $this->illustrations;
+        return $this->illustrationsFilenames;
     }
 
-    public function setIllustrations(array $illustrations): self
+    public function setIllustrationsFilenames(array $illustrationsFilenames): self
     {
-        $this->illustrations = $illustrations;
+        $this->illustrationsFilenames = $illustrationsFilenames;
 
         return $this;
     }
