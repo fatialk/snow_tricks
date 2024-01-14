@@ -2,14 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Trick;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/comment')]
 class CommentController extends AbstractController
@@ -22,24 +24,29 @@ class CommentController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_comment_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/new', name: 'app_comment_new', methods: ['POST'])]
+    public function new(Trick $trick, Request $request, EntityManagerInterface $entityManager): Response
     {
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setTrick($trick);
+            $user = $this->getUser();
+            $comment->setUser($user);
             $entityManager->persist($comment);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
+            return new JsonResponse([
+                'status'=>'success',
+                'username'=> $user->getUsername(),
+                'avatar'=> $user->getAvatarFilename(),
+                'comment'=> $comment->getComment(),
+                'createdAt'=> $comment->getCreatedAt(),
+            ]);
         }
 
-        return $this->render('comment/new.html.twig', [
-            'comment' => $comment,
-            'form' => $form,
-        ]);
+        return new JsonResponse(['status'=>'error']);
     }
 
     #[Route('/{id}', name: 'app_comment_show', methods: ['GET'])]

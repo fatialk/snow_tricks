@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CommentRepository;
 use Symfony\Component\Serializer\Attribute\Groups;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
 {
@@ -19,7 +20,7 @@ class Comment
 
     #[Groups('comment')]
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
+    private ?string $comment = null;
 
     #[Groups('comment')]
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE)]
@@ -68,25 +69,22 @@ class Comment
         return $this->id;
     }
 
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
 
-    public function setDescription(string $description): static
+    public function getCreatedAt(): ?string
     {
-        $this->description = $description;
-
-        return $this;
+        if(!$this->createdAt)
+        {
+            return $this->createdAt;
+        }
+        return $this->createdAt->format('l jS \o\f F Y at h:i:s A');
     }
-
-    public function getCreatedAt(): DateTime
+    public function getUpdatedAt(): ?string
     {
-        return $this->createdAt;
-    }
-    public function getUpdatedAt(): ?DateTime
-    {
-        return $this->updatedAt;
+        if(!$this->updatedAt)
+        {
+            return $this->updatedAt;
+        }
+        return $this->updatedAt->format('l jS \o\f F Y at h:i:s A');
     }
 
     #[ORM\PrePersist]
@@ -99,5 +97,23 @@ class Comment
     public function setUpdatedAtValue(): void
     {
         $this->updatedAt = new DateTime();
+    }
+
+    /**
+     * Get the value of comment
+     */
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    /**
+     * Set the value of comment
+     */
+    public function setComment(?string $comment): self
+    {
+        $this->comment = $comment;
+
+        return $this;
     }
 }

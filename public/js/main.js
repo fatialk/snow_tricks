@@ -1,3 +1,4 @@
+if (document.querySelector('button#loadMore')){
 document.querySelector('button#loadMore').addEventListener("click", function() {
   const hiddenArticles = document.querySelectorAll('.trick.d-none');
   const hiddenArticles6 = Array.from(hiddenArticles).slice(0, 6);
@@ -8,3 +9,6 @@ document.querySelector('button#loadMore').addEventListener("click", function() {
     this.classList.add('d-none');
   }
 });
+}
+
+
