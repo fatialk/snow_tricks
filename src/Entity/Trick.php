@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use DateTime;
+use App\Entity\Image;
+use App\Entity\Video;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TrickRepository;
@@ -15,6 +17,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\UniqueConstraint(name: 'unique_name', columns: ['name'])]
 class Trick
 {
+
 
     #[Groups('trick')]
     #[ORM\Id]
@@ -36,14 +39,6 @@ class Trick
     private string $description;
 
     #[Groups('trick')]
-    #[ORM\Column]
-    private array $illustrationsFilenames = [];
-
-    #[Groups('trick')]
-    #[ORM\Column]
-    private array $videos = [];
-
-    #[Groups('trick')]
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_MUTABLE)]
     private DateTime $createdAt;
 
@@ -59,9 +54,20 @@ class Trick
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'trick', orphanRemoval: true)]
     private Collection $comments;
 
+    #[Groups('trick')]
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'trick', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    private Collection $images;
+
+    #[Groups('trick')]
+    #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'trick', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    private ?Collection $videos= null;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->images = new ArrayCollection();
+        $this->videos = new ArrayCollection();
+
     }
 
 
@@ -88,6 +94,51 @@ class Trick
         return $this;
     }
 
+    public function addVideo(Video $video): self
+    {
+        if (!$this->videos?->contains($video)) {
+            $this->videos[] = $video;
+            $video->setTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): self
+    {
+        if ($this->videos?->contains($video)) {
+            $this->videos?->removeElement($video);
+            // set the owning side to null (unless already changed)
+            if ($video->getTrick() === $this) {
+                $video->setTrick(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->images?->contains($image)) {
+            $this->images[] = $image;
+            $image->setTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        if ($this->images?->contains($image)) {
+            $this->images?->removeElement($image);
+            // set the owning side to null (unless already changed)
+            if ($image->getTrick() === $this) {
+                $image->setTrick(null);
+            }
+        }
+
+        return $this;
+    }
 
     public function getUser(): ?User
     {
@@ -142,29 +193,6 @@ class Trick
         return $this;
     }
 
-    public function getIllustrationsFilenames(): array
-    {
-        return $this->illustrationsFilenames;
-    }
-
-    public function setIllustrationsFilenames(array $illustrationsFilenames): self
-    {
-        $this->illustrationsFilenames = $illustrationsFilenames;
-
-        return $this;
-    }
-
-    public function getVideos(): array
-    {
-        return $this->videos;
-    }
-
-    public function setVideos(array $videos): self
-    {
-        $this->videos = $videos;
-
-        return $this;
-    }
     public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
@@ -203,6 +231,42 @@ class Trick
     public function setComments($comments)
     {
         $this->comments = $comments;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of images
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    /**
+     * Set the value of images
+     */
+    public function setImages(Collection $images): self
+    {
+        $this->images = $images;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of videos
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    /**
+     * Set the value of videos
+     */
+    public function setVideos(Collection $videos): self
+    {
+        $this->videos = $videos;
 
         return $this;
     }

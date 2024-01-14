@@ -12,17 +12,21 @@
             {% endif %}
     <div class="card">
     <a href="{{path('app_trick_show',{id : trick.id} )}}">
-		<img class="card-img-top" src="{{ asset('uploads/trick/'~trick.illustrationsFilenames.0)}}" width="350px" height="300px">
+		{% if trick.images is not empty %}
+    <img class="card-img-top" src="{{ asset('uploads/trick/'~trick.images.0.fileName)}}" width="350px" height="300px">
+    {% else %}
+    <img class="card-img-top" src="{{ asset('img/logo.png')}}" width="350px" height="300px">
+    {% endif %}
       <div class="card-body">
         <h5 class="card-title">{{trick.name}}</h5>
         <p class="card-text">{{trick.description[:20]}} ...</p>
 	  </div>
     </a>
 	  <div class="card-footer">
-					<a href="#" class="card--button">
+					<a href="{{path('app_trick_edit',{id : trick.id} )}}" class="card--button">
 						<span class="lnr lnr-pencil"></span>
 					</a>
-					<a href="#" class="card--button">
+					<a href="{{path('app_trick_show',{id : trick.id} )}}" class="card--button">
 						<span class="lnr lnr-trash"></span>
 					</a>
 				</div>

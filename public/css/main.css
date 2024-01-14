@@ -128,3 +128,6 @@ body > .container:not(.notConnected){
     border: 1px solid #d52d12;
     text-decoration: none;
   }
+  ul.images li, ul.videos li{
+    margin-bottom: 20px;
+  }

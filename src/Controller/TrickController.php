@@ -2,13 +2,20 @@
 
 namespace App\Controller;
 
-use App\Entity\Trick;
+use App\Entity\Comment;
 use App\Entity\User;
+use App\Entity\Image;
+use App\Entity\Trick;
+use App\Entity\Video;
+use App\Form\CommentType;
 use App\Form\TrickType;
+use Symfony\Component\Form\Form;
 use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,42 +36,13 @@ class TrickController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $trick = new Trick();
+
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-              // @var UploadedFile $illustratrionsFiles //
-              $illustratrionsFiles = $form->get('illustrations')->getData();
 
-              // this condition is needed because the 'avatar' field is not required
-              // so the file must be processed only when a file is uploaded
-              $illustratrions = [];
-              if (!empty($illustratrionsFiles)) {
-                foreach($illustratrionsFiles as $illustratrionFile)
-                {
-                  $originalFilename = pathinfo($illustratrionFile->getClientOriginalName(), PATHINFO_FILENAME);
-                  // this is needed to safely include the file name as part of the URL
-                  $safeFilename = $slugger->slug($originalFilename);
-                  $newFilename = $safeFilename . '-' . uniqid() . '.' . $illustratrionFile->guessExtension();
-
-                  // Move the file to the directory where brochures are stored
-                  try {
-                      $illustratrionFile->move(
-                          $this->getParameter('trick_directory'),
-                          $newFilename
-                      );
-                  } catch (FileException $e) {
-                      // ... handle exception if something happens during file upload
-                  }
-
-                  $illustratrions[] = $newFilename;
-                }
-
-
-                  // updates the 'avatarFilename' property to store the avatar file name
-                  // instead of its contents
-                  $trick->setIllustrationsFilenames($illustratrions);
-              }
+            $this->saveMedia($trick, $form, $slugger);
 
             $trick->setUser($this->getUser());
             $entityManager->persist($trick);
@@ -74,28 +52,37 @@ class TrickController extends AbstractController
         }
 
         return $this->render('trick/new.html.twig', [
-            'trick' => $trick,
             'form' => $form,
+
         ]);
     }
 
     #[Route('/{id}', name: 'app_trick_show', methods: ['GET'])]
     public function show(Trick $trick): Response
     {
-        return $this->render('single.html.twig', [
+
+        $form = $this->createForm(CommentType::class, new Comment(), ['action' => $this->generateUrl('app_comment_new',['id'=> $trick->getId()])]);
+        return $this->render('trick/show.html.twig', [
             'trick' => $trick,
+            'form' => $form
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_trick_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Trick $trick, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Trick $trick, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
+
         $form = $this->createForm(TrickType::class, $trick);
+        foreach($trick->getImages() as $key => $image)
+        {
+            $imagePath = $this->getParameter('trick_directory').'/'.$image->getFileName();
+            $imageFile = new File($imagePath);
+            $form->get('images')[$key]->get('image')->setData($imageFile);
+        }
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->saveMedia($trick, $form, $slugger);
             $entityManager->flush();
-
             return $this->redirectToRoute('app_trick_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -115,4 +102,55 @@ class TrickController extends AbstractController
 
         return $this->redirectToRoute('app_trick_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    private function saveMedia(Trick $trick, FormInterface $form, SluggerInterface $slugger)
+    {
+        $videos = $form->get('videos')->getData();
+        if (!empty($videos)) {
+            foreach($videos as $video)
+            {
+                if(!empty($video->getLink()))
+                {
+                    $video->setTrick($trick);
+                    $trick->addVideo($video);
+                }
+
+            }
+        }
+        // @var UploadedFile $illustratrionsFiles //
+        $formImages = $form->get('images');
+
+        // this condition is needed because the 'avatar' field is not required
+        // so the file must be processed only when a file is uploaded
+        foreach($formImages as $key=>$formImage)
+        {
+            $imageFile = $formImage->get('image')->getData();
+            if(empty($imageFile))
+            {
+                continue;
+            }
+
+            //   $pic = $imageForm->get('name')->getData();
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            // this is needed to safely include the file name as part of the URL
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+            // Move the file to the directory where brochures are stored
+            try {
+                $imageFile->move(
+                    $this->getParameter('trick_directory'),
+                    $newFilename
+                );
+
+                $image = $trick->getImages()[$key];
+                $image->setFileName($newFilename);
+                $image->setTrick($trick);
+            } catch (FileException $e) {
+                // ... handle exception if something happens during file upload
+            }
+        }
+
+    }
 }
+
+
