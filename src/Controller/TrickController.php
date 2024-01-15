@@ -43,7 +43,8 @@ class TrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $this->saveMedia($trick, $form, $slugger);
-
+            $slug = strtolower($slugger->slug($trick->getName()));
+            $trick->setSlug($slug);
             $trick->setUser($this->getUser());
             $entityManager->persist($trick);
             $entityManager->flush();
@@ -57,7 +58,7 @@ class TrickController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_trick_show', methods: ['GET'])]
+    #[Route('/{id}/{slug}', name: 'app_trick_show', methods: ['GET'], requirements: ['id' => '\d+', 'slug'=> '.+'])]
     public function show(Trick $trick): Response
     {
 
@@ -82,6 +83,8 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->saveMedia($trick, $form, $slugger);
+            $slug = strtolower($slugger->slug($trick->getName()));
+            $trick->setSlug($slug);
             $entityManager->flush();
             return $this->redirectToRoute('app_trick_index', [], Response::HTTP_SEE_OTHER);
         }

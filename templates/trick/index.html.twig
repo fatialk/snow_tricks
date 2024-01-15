@@ -12,7 +12,7 @@
             <div class="trick">
             {% endif %}
     <div class="card">
-    <a href="{{path('app_trick_show',{id : trick.id} )}}">
+    <a href="{{path('app_trick_show',{id : trick.id, slug: trick.slug} )}}">
     {% if trick.images is not empty %}
     <img class="card-img-top" src="{{ asset('uploads/trick/'~trick.images.0.fileName)}}" width="350px" height="300px">
     {% else %}
