@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Comment;
 use App\Entity\User;
 use App\Entity\Image;
 use App\Entity\Trick;
 use App\Entity\Video;
-use App\Form\CommentType;
+use App\Entity\Comment;
 use App\Form\TrickType;
+use App\Form\CommentType;
 use Symfony\Component\Form\Form;
 use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -43,7 +44,8 @@ class TrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $this->saveMedia($trick, $form, $slugger);
-
+            $slug = strtolower($slugger->slug($trick->getName()));
+            $trick->setSlug($slug);
             $trick->setUser($this->getUser());
             $entityManager->persist($trick);
             $entityManager->flush();
@@ -57,7 +59,7 @@ class TrickController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_trick_show', methods: ['GET'])]
+    #[Route('/{id}/{slug}', name: 'app_trick_show', methods: ['GET'], requirements: ['id' => '\d+', 'slug'=> '.+'])]
     public function show(Trick $trick): Response
     {
 
@@ -68,7 +70,7 @@ class TrickController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_trick_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'app_trick_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Trick $trick, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
 
@@ -82,6 +84,8 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->saveMedia($trick, $form, $slugger);
+            $slug = strtolower($slugger->slug($trick->getName()));
+            $trick->setSlug($slug);
             $entityManager->flush();
             return $this->redirectToRoute('app_trick_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -92,15 +96,12 @@ class TrickController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_trick_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_trick_delete', methods: ['DELETE'])]
     public function delete(Request $request, Trick $trick, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($trick);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_trick_index', [], Response::HTTP_SEE_OTHER);
+        $entityManager->remove($trick);
+        $entityManager->flush();
+        return new JsonResponse(['status'=>'success']);
     }
 
     private function saveMedia(Trick $trick, FormInterface $form, SluggerInterface $slugger)

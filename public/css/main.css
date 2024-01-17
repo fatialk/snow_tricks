@@ -37,7 +37,8 @@ body > .container:not(.notConnected){
   width:100%
 }
 .vrmedia-gallery .lSGallery{
-  display:inline-flex
+  display:inline-flex;
+  height: 70px;
 }
 .vrmedia-gallery .lSGallery li{
   border-radius:12px !important
@@ -86,21 +87,10 @@ body > .container:not(.notConnected){
     margin-left: -15px;
   }
 
-  .card-footer{
-    display: flex;
-    justify-content: space-between;
-  }
-  .card-footer .card--button {
-    display: block;
-    background-color: #000000;
-    padding: 10px 20px;
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    transition: 0.3s ease-out;
-  }
-  .card-footer .card--button:hover {
-    background-color: #d52d12;
+  footer{
+    text-transform: uppercase;
+    font-weight: 600;
+    color: rgb(255, 255, 255);
   }
 
 
