@@ -18,12 +18,21 @@
 						<a href="{{path('app_trick_index')}}">Tricks</a>
 					</li>
 					{% if app.user is not empty %}
-					<li>
+					<div class='d-flex flex-column'>
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseLogout" aria-expanded="false" aria-controls="collapseExample">
+                     Bonjour {{ app.user.username }}
+                    </button>
+					<div class="card card-body">
+					<div class="collapse" id="collapseLogout">
 						<a href="{{path('app_logout')}}">Logout</a>
-					</li>
+					</div>
+					</div>
+					</div>
+					{% else %}
 					<li>
-						{{ app.user.username }}
+						<a href="{{path('app_login')}}">Login</a>
 					</li>
+
 					{% endif %}
 				</ul>
 			</div>
