@@ -10,7 +10,11 @@
                     <li>
                     <div class="flex">
                         {{ form_widget(element.image) }}
-                        <img width="100" src="/uploads/trick/{{element.image.vars.data.filename}}" />
+                        {% if element.image.vars.data is not empty %}
+                        <img width="100" src="{{ asset('uploads/trick/'~element.image.vars.data.filename)}}" />
+                        {% else %}
+                        <img width="100" src="{{ asset('img/logo.png')}}" />
+                        {% endif %}
                     </div>
                     </li>
     {% endfor %}
