@@ -32,9 +32,9 @@
 		<!-- Start post Area -->
 		<section class="post-area">
 			<div class="container">
-				<div class="row justify-content-center">
-					<div class="col-lg-8">
-						<div class="single-page-post">
+
+					<div class="single-page-post row">
+						<div class="col-md-12 col-lg-6 " >
 							<div class="top-wrapper ">
 								<div class="row d-flex justify-content-between">
 									<h2 class="col-lg-8 col-md-12 text-uppercase">
@@ -53,7 +53,6 @@
 											{% endfor %}
 											{% for video in trick.videos %}
 												<li data-fancybox="gallery" data-src="/img/video.jpg" data-thumb="/img/video.jpg">
-												{# <iframe width="560" height="315" src="https://www.youtube.com/embed/mBB7CznvSPQ?si=_UkmbTG5R0SK2pph" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> #}
 											    {{ video.link|raw }}
                                                 </li>
 											{% endfor %}
@@ -69,19 +68,39 @@
 								</p>
 							</div>
 							<div class="bottom-wrapper">
-								<div class="social-media-comments">
-									<div class="col-lg-4 single-b-wrap col-md-12">
+
+							</div>
+						</div>
+						<div class="col-md-12 col-lg-6">
+							<!-- Start commentform Area -->
+							<div class="col-lg-4 single-b-wrap col-md-12">
 										<i class="fa fa-comment-o" aria-hidden="true"></i>
 										{{trick.comments|length}} comments
+							</div>
+							<div class="commentform-area  pb-50 pt-80">
+								<div class="container">
+									<h5 class="text-uppercas pb-50">Leave a Comment</h5>
+									<div class="row flex-row d-flex">
+										<div class="col-lg-6">
+                                        {{ form_start(form) }}
+                                        {{form_row(form.comment)}}
+                                        <div class='flex align-items-center'>
+                                        <button class="addComment primary-btn mr-10">{{ button_label|default('Leave a comment') }}</button>
+                                        <div class="loader spinner-border text-primary d-none" role="status">
+                                          <span class="sr-only">Loading...</span>
+                                        </div>
+                                        </div>
+										{{form_end(form)}}
+                                        </div>
 									</div>
 								</div>
 							</div>
-
+							<!-- End commentform Area -->
 							<!-- Start comment-sec Area -->
-							<section class="comment-sec-area pb-80">
+							<div class="comment-sec-area pb-80">
 								<div class="container">
 									<div class="comment-list">
-                                    {% for comment in trick.comments %}
+                                    {% for comment in trick.comments|reverse %}
 											<div class="single-comment justify-content-between d-flex bg-light mb-2 p-2">
 												<div class="user justify-content-between d-flex">
 													<div class="thumb">
@@ -102,33 +121,10 @@
                                             {% endfor %}
 										</div>
 								</div>
-							</section>
+							</div>
 							<!-- End comment-sec Area -->
-
-							<!-- Start commentform Area -->
-							<section class="commentform-area  pb-120 pt-80 mb-100">
-								<div class="container">
-									<h5 class="text-uppercas pb-50">Leave a Comment</h5>
-									<div class="row flex-row d-flex">
-										<div class="col-lg-6">
-                                        {{ form_start(form) }}
-                                        {{form_row(form.comment)}}
-                                        <div class='flex align-items-center'>
-                                        <button class="addComment primary-btn mr-10">{{ button_label|default('Leave a comment') }}</button>
-                                        <div class="loader spinner-border text-primary d-none" role="status">
-                                          <span class="sr-only">Loading...</span>
-                                        </div>
-                                        </div>
-										{{form_end(form)}}
-                                        </div>
-									</div>
-								</div>
-							</section>
-							<!-- End commentform Area -->
-
 						</div>
 					</div>
-				</div>
 			</div>
 		</section>
 		<!-- End post Area -->

@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Security\EmailVerifier;
 use App\Form\RegistrationFormType;
 use App\Security\UserAuthenticator;
+use App\Service\MediaService;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -30,7 +31,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, UserAuthenticator $authenticator, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, UserAuthenticator $authenticator, EntityManagerInterface $entityManager, SluggerInterface $slugger, MediaService $mediaService): Response
     {
 
         $user = new User();
@@ -53,23 +54,10 @@ class RegistrationController extends AbstractController
             // this condition is needed because the 'avatar' field is not required
             // so the file must be processed only when a file is uploaded
             if ($avatarFile) {
-                $originalFilename = pathinfo($avatarFile->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $avatarFile->guessExtension();
-
-                // Move the file to the directory where brochures are stored
-                try {
-                    $avatarFile->move(
-                        $this->getParameter('avatar_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
-                }
-
                 // updates the 'avatarFilename' property to store the avatar file name
                 // instead of its contents
+
+                $newFilename = $mediaService->moveUploadedFile($avatarFile, $this->getParameter('avatar_directory') );
                 $user->setAvatarFilename($newFilename);
             }
 

@@ -27,7 +27,7 @@ if (document.querySelector('button.addComment')){
 													</div>
 												</div>
 											</div>`;
-                      commentList.innerHTML += newComment;
+                      commentList.insertAdjacentHTML("afterbegin",newComment);
                       loader.classList.add('d-none');
         }
 
