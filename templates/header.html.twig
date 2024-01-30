@@ -1,0 +1,49 @@
+<!-- Start Header Area -->
+<header class="default-header">
+	<nav class="navbar navbar-expand-lg navbar-light">
+		<div class="container">
+			<a class="navbar-brand" href="{{path('home')}}">
+				<img src="{{ asset('img/logo.png') }}" alt="" width="100px" height="100px">
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse justify-content-end align-items-center" id="navbarSupportedContent">
+				<ul class="navbar-nav">
+					<li>
+						<a href="{{path('home')}}">Home</a>
+					</li>
+					<li>
+						<a href="{{path('app_trick_index')}}">Tricks</a>
+					</li>
+				</ul>
+				{% if app.user is not empty %}
+					<div class="container-fluid d-flex flex-column align-items-end" id='create-logout'>
+						<a class="navbar-brand" href="#">
+							<img src="{{ asset('uploads/avatar/'~app.user.avatarFilename) }}" alt="Logo" style="width:40px;" class="rounded-pill">
+						</a>
+						<span>Hello
+							{{ app.user.username }}</span>
+					</div>
+					<ul class="navbar-nav link d-none">
+						<li>
+							<a href="{{path('app_logout')}}">Logout</a>
+						</li>
+						<li>
+							<a href="{{ path('app_trick_new') }}">Create</a>
+						</li>
+					</ul>
+				{% else %}
+					<ul class="navbar-nav">
+						<li>
+							<a href="{{path('app_login')}}">Login</a>
+						</li>
+
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+	</nav>
+</header>
+<!-- End Header Area -->

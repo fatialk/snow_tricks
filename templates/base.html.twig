@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+		<title>Blogger</title>
+
+		<link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
+		<link
+		rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+
+		<!-- CSS -->
+		<link rel="stylesheet" href="{{ asset('css/lightslider.min.css') }}">
+		<link rel="stylesheet" href="{{ asset('css/linearicons.css') }}">
+		<link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
+		<link rel="stylesheet" href="{{ asset('css/theme.min.css') }}">
+		<link
+		rel="stylesheet" href="{{ asset('css/main.css') }}">
+		{# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
+		{% endblock %}
+
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
+	</head>
+
+	<body>
+
+		{% if (notConnected is not defined) %}
+			{% include 'header.html.twig' %}
+		{% endif %}
+		{% for flash_error in app.flashes('error') %}
+			<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+		{% endfor %}
+		{% for flash_success in app.flashes('success') %}
+			<div class="alert alert-success" role="alert">{{ flash_success }}</div>
+		{% endfor %}
+		{% block body %}{% endblock %}
+		{% if (notConnected is not defined) %}
+			{% include 'footer.html.twig' %}
+		{% endif %}
+
+		<!-- Modal -->
+		<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalLabel"></h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary removeButton"></button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+		<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+		{% if app.request.get('_route') == 'home' %}
+			<script src="{{ asset('js/vendor/jquery-2.2.4.min.js') }}"></script>
+		{% endif %}
+		{% if app.request.get('_route') in ['app_trick_show', 'app_trick_index'] %}
+			<script src="{{ asset('js/lightslider.min.js') }}"></script>
+			<script>
+				jQuery(document).ready(function () {
+jQuery(".trick-gallery").lightSlider({
+gallery: true,
+item: 1,
+loop: true,
+thumbItem: 4,
+thumbMargin: 10,
+videojs: true
+});
+});
+			</script>
+		{% endif %}
+		<script src="{{ asset('js/jquery.sticky.js') }}"></script>
+		<script src="{{ asset('js/comment.js') }}"></script>
+		<script src="{{ asset('js/trick.js') }}"></script>
+		<script src="{{ asset('js/main.js') }}"></script>
+	</body>
+</html>

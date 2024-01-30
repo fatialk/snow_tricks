@@ -1,0 +1,22 @@
+
+Warning: readfile(): SSL operation failed with code 1. OpenSSL Error messages:
+error:1416F086:SSL routines:tls_process_server_certificate:certificate verify failed in Command line code on line 1
+
+Call Stack:
+    0.0004     400520   1. {main}() Command line code:0
+    0.0005     400520   2. readfile($filename = 'http://symfony.com/installer') Command line code:1
+
+
+Warning: readfile(): Failed to enable crypto in Command line code on line 1
+
+Call Stack:
+    0.0004     400520   1. {main}() Command line code:0
+    0.0005     400520   2. readfile($filename = 'http://symfony.com/installer') Command line code:1
+
+
+Warning: readfile(http://symfony.com/installer): Failed to open stream: operation failed in Command line code on line 1
+
+Call Stack:
+    0.0004     400520   1. {main}() Command line code:0
+    0.0005     400520   2. readfile($filename = 'http://symfony.com/installer') Command line code:1
+

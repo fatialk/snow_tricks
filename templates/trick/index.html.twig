@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trick index
+{% endblock %}
+
+{% block body %}
+	<button type="button" class="btn btn-primary btn-floating btn-lg" id="btn-back-to-top">
+		<span class="lnr lnr-arrow-up"></span>
+	</button>
+	<div class="container">
+		<div class="row row-cols-sm-1 row-cols-md-2 row-cols-lg-3 g-4">
+			{% for trick in tricks %}
+				{% if loop.index > 6 %}
+					<div class="trick d-none" data-trick-id="{{trick.id}}">
+					{% else %}
+						<div class="trick" data-trick-id="{{trick.id}}">
+						{% endif %}
+						<div class="card">
+							<a href="{{path('app_trick_show',{id : trick.id, slug: trick.slug} )}}">
+								{% if trick.images is not empty %}
+									<img class="card-img-top" src="{{ asset('uploads/trick/'~trick.images.0.fileName)}}" width="350px" height="300px">
+								{% else %}
+									<img class="card-img-top" src="{{ asset('img/logo.png')}}" width="350px" height="300px">
+								{% endif %}
+								<div class="card-body">
+									<h5 class="card-title">{{trick.name}}</h5>
+									<p class="card-text">{{trick.description[:20]}}
+										...</p>
+								</div>
+							</a>
+							{% if app.user is not empty and app.user.id == trick.user.id %}
+							<div class="card-footer d-flex justify-content-end">
+								<a href="{{path('app_trick_edit',{id : trick.id} )}}" class="card--button">
+									<span class="lnr lnr-pencil pe-4"></span>
+								</a>
+								<a class="card--button" data-bs-toggle="modal" data-bs-target="#modal" data-modal-button-label="Remove" data-modal-title="{{trick.name}}" data-modal-trick-id="{{trick.id}}" data-modal-body="Are you sure to want to remove {{trick.name}} ?" data-modal-remove-url='{{path('app_trick_delete',{id : trick.id} )}}'>
+									<span class="lnr lnr-trash"></span>
+								</a>
+							</div>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+
+			</div>
+			<button id="loadMore">Load More</button>
+		</div>
+	{% endblock %}
