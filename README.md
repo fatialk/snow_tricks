@@ -16,6 +16,7 @@ https://github.com/fatialk/snow_tricks.git
 2 - Install libraries
 
     php bin/console composer install
+	
 3 - Create database
 
 a) Update DATABASE_URL .env file with your database configuration.
