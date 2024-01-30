@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-use Faker\Factory;
 use App\Entity\Image;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -18,13 +17,12 @@ class ImageFixtures extends Fixture implements DependentFixtureInterface
 
         $trickNames = array("bluntslide", "corked-spin", "indy", "nose-press", "ollie-nollie", "rodeo", "tail", "tamedog", "tripod", "weddle");
 
-        foreach($trickNames as $trickName){
+        foreach ($trickNames as $trickName) {
 
-            for($i = 1; $i < 4; $i++)
-            {
+            for ($i = 1; $i < 4; $i++) {
                 $image = new Image();
                 $image->setTrick($this->getReference($trickName));
-                $image->setFileName($trickName.'_'.$i.'.'.'jpg');
+                $image->setFileName($trickName . '_' . $i . '.' . 'jpg');
                 $manager->persist($image);
             }
         }

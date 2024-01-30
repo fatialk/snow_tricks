@@ -18,22 +18,21 @@ class CommentFixtures extends Fixture implements DependentFixtureInterface
 
         $trickNames = array("bluntslide", "corked-spin", "indy", "nose-press", "ollie-nollie", "rodeo", "tail", "tamedog", "tripod", "weddle");
         $users = ['user1', 'user2', 'user3', 'user4', 'user5'];
-        foreach($trickNames as $trickName){
+        foreach ($trickNames as $trickName) {
 
-            for($i = 1; $i < 6; $i++)
-            {
-               $faker = Factory::create();
-               $comment = new Comment();
-               $comment->setComment($faker->text(50));
-               $userRandKey = array_rand($users);
-               $comment->setUser($this->getReference($users[$userRandKey]));
-               $comment->setTrick($this->getReference($trickName));
-               $comment->setCreatedAtValue($faker->dateTime('now', null));
-               $comment->setUpdatedAtValue($faker->dateTime('now', null));
-               $manager->persist($comment);
+            for ($i = 1; $i < 6; $i++) {
+                $faker = Factory::create();
+                $comment = new Comment();
+                $comment->setComment($faker->text(50));
+                $userRandKey = array_rand($users);
+                $comment->setUser($this->getReference($users[$userRandKey]));
+                $comment->setTrick($this->getReference($trickName));
+                $comment->setCreatedAtValue($faker->dateTime('now', null));
+                $comment->setUpdatedAtValue($faker->dateTime('now', null));
+                $manager->persist($comment);
             }
 
-        $manager->flush();
+            $manager->flush();
         }
     }
 

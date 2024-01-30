@@ -286,33 +286,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-  // @see UserInterface
+    // @see UserInterface
     //
-   public function getUserIdentifier(): string
-   {
-       return (string) $this->email;
-   }
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
 
-   /**
-    * @see UserInterface
-    */
-   public function getRoles(): array
-   {
-       $roles = $this->roles;
-       // guarantee every user at least has ROLE_USER
-       $roles[] = 'ROLE_USER';
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
 
-       return array_unique($roles);
-   }
+        return array_unique($roles);
+    }
 
-   public function setRoles(array $roles): self
-   {
-       $this->roles = $roles;
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
 
-       return $this;
-   }
+        return $this;
+    }
 
-   /**
+    /**
      * Returning a salt is only needed if you are not using a modern
      * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
      *
@@ -343,6 +343,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
 }
-

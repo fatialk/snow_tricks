@@ -47,7 +47,7 @@ class Trick
     private ?DateTime $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tricks')]
-    #[ORM\JoinColumn(name:"user_id", referencedColumnName:"id", nullable:false)]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false)]
     private ?User $user;
 
     #[Groups('trick')]
@@ -60,7 +60,7 @@ class Trick
 
     #[Groups('trick')]
     #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'trick', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    private ?Collection $videos= null;
+    private ?Collection $videos = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $slug = null;
@@ -70,7 +70,6 @@ class Trick
         $this->comments = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->videos = new ArrayCollection();
-
     }
 
 
