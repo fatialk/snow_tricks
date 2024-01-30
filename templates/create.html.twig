@@ -1,43 +1,43 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-<!-- Start Form Area -->
-<div class="admin-form">
-	<h1 class="title-admin-form">Add a new trick</h1>
-	<hr class="tm-hr-primary tm-mb-45">
-	<form action="/trick/create" enctype="multipart/form-data" method="post" class="mb-5 tm-comment-form">
-		<input type="hidden" name="csrf_token" value=""/>
-		<label for="title">Title</label>
-		<div class="mb-4">
-			<textarea class="form-control" name="title" rows="6" required></textarea>
-		</div>
-		<label for="category">Choose a category:</label>
-		<select name="category" id="category" required>
-			<option value="">--Please choose an option--</option>
-			<option value="Butter tricks">Butter tricks</option>
-			<option value="Grabs">Grabs</option>
-			<option value="Spins, flips and corks">Spins, flips and corks</option>
-			<option value="Rails and boxes">Rails and boxes</option>
-		</select>
-		<label for="image">Illustrations</label>
-		<div class="mb-4">
-			<input class="form-control" type="file" name="image" rows="6" accept="image/png, image/jpeg" required/>
-			<input class="form-control" type="file" name="image" rows="6" accept="image/png, image/jpeg"/>
-			<input class="form-control" type="file" name="image" rows="6" accept="image/png, image/jpeg"/>
-		</div>
-		<label for="url">Videos</label>
-		<div class="mb-4">
-			<input type="url" name="url" id="url" placeholder="https://example.com" pattern="https://.*" size="30"/>
-			<input type="url" name="url" id="url" placeholder="https://example.com" pattern="https://.*" size="30"/>
-			<input type="url" name="url" id="url" placeholder="https://example.com" pattern="https://.*" size="30"/>
-		</div>
-		<label for="description">Description</label>
-		<div class="mb-4">
-			<textarea class="form-control" name="description" rows="6" required></textarea>
-		</div>
-		<div class="text-right">
-			<button class="tm-btn tm-btn-primary tm-btn-small">Envoyer</button>
-		</div>
-	</form>
-</div>
-<!-- End Form Area -->
+	<!-- Start Form Area -->
+	<div class="admin-form">
+		<h1 class="title-admin-form">Add a new trick</h1>
+		<hr class="tm-hr-primary tm-mb-45">
+		<form action="/trick/create" enctype="multipart/form-data" method="post" class="mb-5 tm-comment-form">
+			<input type="hidden" name="csrf_token" value=""/>
+			<label for="title">Title</label>
+			<div class="mb-4">
+				<textarea class="form-control" name="title" rows="6" required></textarea>
+			</div>
+			<label for="category">Choose a category:</label>
+			<select name="category" id="category" required>
+				<option value="">--Please choose an option--</option>
+				<option value="Butter tricks">Butter tricks</option>
+				<option value="Grabs">Grabs</option>
+				<option value="Spins, flips and corks">Spins, flips and corks</option>
+				<option value="Rails and boxes">Rails and boxes</option>
+			</select>
+			<label for="image">Illustrations</label>
+			<div class="mb-4">
+				<input class="form-control" type="file" name="image" rows="6" accept="image/png, image/jpeg" required/>
+				<input class="form-control" type="file" name="image" rows="6" accept="image/png, image/jpeg"/>
+				<input class="form-control" type="file" name="image" rows="6" accept="image/png, image/jpeg"/>
+			</div>
+			<label for="url">Videos</label>
+			<div class="mb-4">
+				<input type="url" name="url" id="url" placeholder="https://example.com" pattern="https://.*" size="30"/>
+				<input type="url" name="url" id="url" placeholder="https://example.com" pattern="https://.*" size="30"/>
+				<input type="url" name="url" id="url" placeholder="https://example.com" pattern="https://.*" size="30"/>
+			</div>
+			<label for="description">Description</label>
+			<div class="mb-4">
+				<textarea class="form-control" name="description" rows="6" required></textarea>
+			</div>
+			<div class="text-right">
+				<button class="tm-btn tm-btn-primary tm-btn-small">Envoyer</button>
+			</div>
+		</form>
+	</div>
+	<!-- End Form Area -->
 {% endblock %}

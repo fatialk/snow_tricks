@@ -32,12 +32,12 @@ class Comment
 
 
     #[ORM\ManyToOne(targetEntity: Trick::class, inversedBy: 'comments')]
-    #[ORM\JoinColumn(name:"trick_id", referencedColumnName:"id", nullable:false)]
+    #[ORM\JoinColumn(name: "trick_id", referencedColumnName: "id", nullable: false)]
     private ?Trick $trick;
 
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'comments')]
-    #[ORM\JoinColumn(name:"user_id", referencedColumnName:"id", nullable:false)]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false)]
     private ?User $user;
 
     public function getUser(): ?User
@@ -72,16 +72,14 @@ class Comment
 
     public function getCreatedAt(): ?string
     {
-        if(!$this->createdAt)
-        {
+        if (!$this->createdAt) {
             return $this->createdAt;
         }
         return $this->createdAt->format('l jS \o\f F Y at h:i:s A');
     }
     public function getUpdatedAt(): ?string
     {
-        if(!$this->updatedAt)
-        {
+        if (!$this->updatedAt) {
             return $this->updatedAt;
         }
         return $this->updatedAt->format('l jS \o\f F Y at h:i:s A');

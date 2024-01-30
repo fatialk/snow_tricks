@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
@@ -57,7 +56,7 @@ class RegistrationController extends AbstractController
                 // updates the 'avatarFilename' property to store the avatar file name
                 // instead of its contents
 
-                $newFilename = $mediaService->moveUploadedFile($avatarFile, $this->getParameter('avatar_directory') );
+                $newFilename = $mediaService->moveUploadedFile($avatarFile, $user->getUsername(), $this->getParameter('avatar_directory'));
                 $user->setAvatarFilename($newFilename);
             }
 

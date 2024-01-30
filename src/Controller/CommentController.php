@@ -38,15 +38,15 @@ class CommentController extends AbstractController
             $entityManager->persist($comment);
             $entityManager->flush();
             return new JsonResponse([
-                'status'=>'success',
-                'username'=> $user->getUsername(),
-                'avatar'=> $user->getAvatarFilename(),
-                'comment'=> $comment->getComment(),
-                'createdAt'=> $comment->getCreatedAt(),
+                'status' => 'success',
+                'username' => $user->getUsername(),
+                'avatar' => $user->getAvatarFilename(),
+                'comment' => $comment->getComment(),
+                'createdAt' => $comment->getCreatedAt(),
             ]);
         }
 
-        return new JsonResponse(['status'=>'error']);
+        return new JsonResponse(['status' => 'error']);
     }
 
     #[Route('/{id}', name: 'app_comment_show', methods: ['GET'])]
@@ -78,7 +78,7 @@ class CommentController extends AbstractController
     #[Route('/{id}', name: 'app_comment_delete', methods: ['POST'])]
     public function delete(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $comment->getId(), $request->request->get('_token'))) {
             $entityManager->remove($comment);
             $entityManager->flush();
         }

@@ -30,14 +30,13 @@ class VideoFixtures extends Fixture implements DependentFixtureInterface
         );
 
 
-        foreach($trickNames as $trickName){
+        foreach ($trickNames as $trickName) {
 
             $video = new Video();
             $video->setTrick($this->getReference($trickName));
             $videoLinksRandKey = array_rand($videoLinks);
             $video->setLink($videoLinks[$videoLinksRandKey]);
             $manager->persist($video);
-
         }
         $manager->flush();
     }
