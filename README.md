@@ -18,19 +18,26 @@ https://github.com/fatialk/snow_tricks.git
 
 2. Install dependencies
 
-  composer require symfony/runtime
-
+  run : composer install
 
 3. Create database
 
 - Update DATABASE_URL .env file with your database configuration.
-DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/snow_tricks_test
+DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
 
 - Create database:
 php bin/console doctrine:database:create
 
+- Create database structure:
+php bin/console make:migration
+and
+php bin/console doctrine:migrations:migrate
 
 - Insert fictive data
 php bin/console doctrine:fixtures:load
 
-4. Configure MAILER_DSN of Symfony mailer in .env file
+4. Configure symfony/mailer in .env file
+- MAILER_SERVER
+- MAILER_USERNAME
+- MAILER_PASS
+- MAILER_DSN=smtp://MAILER_USERNAME:MAILER_PASS@MAILER_SERVER:587?verify_peer=0

@@ -20,8 +20,4 @@
 ###< symfony/phpunit-bridge ###
 
 ###> uploads ###
-public/uploads/avatar/*
-!public/uploads/avatar/.gitkeep
-public/uploads/trick/*
-!public/uploads/trick/.gitkeep
 ###< uploads ###
