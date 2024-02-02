@@ -11,10 +11,12 @@ use App\Repository\TrickRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ORM\UniqueConstraint(name: 'unique_name', columns: ['name'])]
+#[UniqueEntity(fields: ['name'], message: 'There is already a trick with this name')]
+
 class Trick
 {
 
